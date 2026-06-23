@@ -1,0 +1,114 @@
+# ============================================================
+# Master Hydra Configuration
+# ============================================================
+defaults:
+  - model: xgboost
+  - _self_
+
+# ---- Seed ----
+seed: 42
+
+# ---- Data ----
+data:
+  source: yfinance          # yfinance | csv
+  csv_path: data/raw/jpx/
+  tickers:
+    - AAPL
+    - MSFT
+    - GOOGL
+    - NVDA
+    - SPY
+    - QQQ
+  start_date: "2015-01-01"
+  end_date: "2026-06-01"
+  train_end: "2021-12-31"
+  val_end: "2023-12-31"
+  resample_freq: null        # null | W | M
+  missing_threshold: 0.3
+
+# ---- Features ----
+features:
+  basic:
+    returns: true
+    trend: true
+    momentum: true
+    volatility: true
+    volume: true
+    price: true
+    time: true
+    lag: true
+    cross_sectional: true
+  advanced:
+    realized_vol: true
+    rolling_beta: true
+    downside_deviation: true
+    entropy: true
+    hurst: true
+  selection:
+    method: ic_ranking       # mutual_info | shap | pca | ic_ranking | rfe
+    top_k: 30
+  lookback_windows:
+    short: 5
+    medium: 10
+    long: 20
+    extra_long: 50
+
+# ---- Labels ----
+labels:
+  target_type: binary        # binary | regression | ranking | position
+  binary_threshold: 0.0
+  regression_horizon: 5
+  long_threshold: 0.01
+  short_threshold: -0.01
+
+# ---- Training ----
+training:
+  validation_method: walk_forward  # walk_forward | expanding | rolling
+  n_splits: 5
+  rolling_window_size: 252
+  expanding_initial_size: 504
+  step_size: 63
+  quick_mode: false
+  optimizer:
+    lr: 0.001
+    weight_decay: 0.0001
+  loss: bce                  # bce | mse | focal
+  focal_gamma: 2.0
+  early_stopping:
+    patience: 10
+    min_delta: 0.0001
+  epochs: 100
+  batch_size: 256
+
+# ---- Hyperparameter Search ----
+hpo:
+  enabled: false
+  method: bayesian           # grid | bayesian
+  n_trials: 50
+
+# ---- Backtesting ----
+backtest:
+  mode: long_short           # long_only | long_short
+  position_sizing: equal_weight  # equal_weight | vol_targeting | kelly
+  target_volatility: 0.15
+  commission_bps: 10
+  slippage_bps: 5
+  stop_loss: 0.05
+  take_profit: 0.10
+  max_drawdown: 0.20
+  max_turnover: 2.0
+
+# ---- Experiment ----
+experiment:
+  name: quant_alpha_default
+  use_wandb: false
+  use_mlflow: false
+  wandb_project: quant_alpha
+  mlflow_tracking_uri: "file:./mlruns"
+
+# ---- Output ----
+output:
+  dir: outputs
+  plots_dir: outputs/plots
+  metrics_file: outputs/metrics.json
+  checkpoint_dir: outputs/checkpoints
