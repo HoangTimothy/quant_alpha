@@ -15,7 +15,7 @@ lightgbm>=4.3,<5.0
 # --- Finance ---
 vectorbt>=0.26,<1.0
 ta>=0.11,<1.0
-empyrical>=0.5,<1.0
+empyrical-reloaded>=0.5.8
 yfinance>=0.2.36,<1.0
 
 # --- Visualization ---
