@@ -206,6 +206,7 @@ class BacktestEngine:
                 freq="1D",
                 sl_stop=self.stop_loss,
                 tp_stop=self.take_profit,
+                group_by=True,
             )
         else:
             # Single asset
@@ -224,17 +225,27 @@ class BacktestEngine:
             )
 
         portfolio_value = pf.value()
+        if isinstance(portfolio_value, pd.DataFrame):
+            portfolio_value = portfolio_value.iloc[:, 0]
+
         returns = pf.returns()
+        if isinstance(returns, pd.DataFrame):
+            returns = returns.iloc[:, 0]
+
+        def _to_float(x) -> float:
+            if isinstance(x, pd.Series):
+                return float(x.iloc[0]) if len(x) > 0 else 0.0
+            return float(x) if x is not None and not np.isnan(x) else 0.0
 
         stats = {
-            "total_return": float(pf.total_return()),
-            "sharpe_ratio": float(pf.sharpe_ratio()) if not np.isnan(pf.sharpe_ratio()) else 0.0,
-            "sortino_ratio": float(pf.sortino_ratio()) if not np.isnan(pf.sortino_ratio()) else 0.0,
-            "max_drawdown": float(pf.max_drawdown()),
-            "calmar_ratio": float(pf.calmar_ratio()) if not np.isnan(pf.calmar_ratio()) else 0.0,
-            "win_rate": float(pf.trades.win_rate()) if len(pf.trades.records_readable) > 0 else 0.0,
-            "profit_factor": float(pf.trades.profit_factor()) if len(pf.trades.records_readable) > 0 else 0.0,
-            "total_trades": int(pf.trades.count()),
+            "total_return": _to_float(pf.total_return()),
+            "sharpe_ratio": _to_float(pf.sharpe_ratio()),
+            "sortino_ratio": _to_float(pf.sortino_ratio()),
+            "max_drawdown": _to_float(pf.max_drawdown()),
+            "calmar_ratio": _to_float(pf.calmar_ratio()),
+            "win_rate": _to_float(pf.trades.win_rate()),
+            "profit_factor": _to_float(pf.trades.profit_factor()),
+            "total_trades": int(_to_float(pf.trades.count())),
             "initial_capital": initial_capital,
         }
 
