@@ -27,16 +27,15 @@ class XGBoostModel(BaseModel):
         params = {k: v for k, v in self.params.items() if k != "early_stopping_rounds"}
         early_stopping_rounds = self.params.get("early_stopping_rounds", 50)
 
-        self.model = xgb.XGBClassifier(**params)
-
+        callbacks = None
         fit_kwargs: dict = {}
         if X_val is not None and y_val is not None:
             fit_kwargs["eval_set"] = [(X_val, y_val)]
             fit_kwargs["verbose"] = False
 
-            # XGBoost >= 2.0 uses callbacks for early stopping
+            # XGBoost >= 2.0 uses callbacks in constructor for early stopping
             from xgboost.callback import EarlyStopping
-            fit_kwargs["callbacks"] = [
+            callbacks = [
                 EarlyStopping(
                     rounds=early_stopping_rounds,
                     save_best=True,
@@ -44,6 +43,7 @@ class XGBoostModel(BaseModel):
                 )
             ]
 
+        self.model = xgb.XGBClassifier(**params, callbacks=callbacks)
         self.model.fit(X_train, y_train, **fit_kwargs)
         self.best_iteration = getattr(self.model, "best_iteration", None)
         self.is_fitted = True
