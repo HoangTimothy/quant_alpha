@@ -1,10 +1,9 @@
 # Transformer Encoder
-model:
-  name: transformer
-  params:
-    seq_length: 20
-    d_model: 64
-    nhead: 4
-    num_layers: 2
-    dim_feedforward: 128
-    dropout: 0.2
+name: transformer
+params:
+  seq_length: 20
+  d_model: 64
+  nhead: 4
+  num_layers: 2
+  dim_feedforward: 128
+  dropout: 0.2

@@ -1,12 +1,11 @@
 # Random Forest
-model:
-  name: random_forest
-  params:
-    n_estimators: 500
-    max_depth: 10
-    min_samples_split: 20
-    min_samples_leaf: 10
-    max_features: sqrt
-    class_weight: balanced
-    n_jobs: -1
-    random_state: 42
+name: random_forest
+params:
+  n_estimators: 500
+  max_depth: 10
+  min_samples_split: 20
+  min_samples_leaf: 10
+  max_features: sqrt
+  class_weight: balanced
+  n_jobs: -1
+  random_state: 42

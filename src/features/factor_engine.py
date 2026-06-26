@@ -214,8 +214,11 @@ class FactorEngine:
     def _cross_sectional(df: pd.DataFrame) -> pd.DataFrame:
         """Z-score normalize numeric features within each date."""
         numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
-        # Exclude raw OHLCV from z-scoring
-        exclude = {"open", "high", "low", "close", "volume", "adj_close"}
+        # Exclude raw OHLCV and date-based features (which have 0 variance across assets on any given date)
+        exclude = {
+            "open", "high", "low", "close", "volume", "adj_close",
+            "weekday_sin", "weekday_cos", "month_sin", "month_cos"
+        }
         factor_cols = [c for c in numeric_cols if c not in exclude]
 
         if not factor_cols:
@@ -226,6 +229,7 @@ class FactorEngine:
         stds = grouped.transform("std").replace(0, np.nan)
 
         for col in factor_cols:
-            df[f"cs_zscore_{col}"] = (df[col] - means[col]) / stds[col]
+            # Handle NaN std gracefully by filling with 0.0 (meaning value equals mean)
+            df[f"cs_zscore_{col}"] = ((df[col] - means[col]) / stds[col]).fillna(0.0)
 
         return df

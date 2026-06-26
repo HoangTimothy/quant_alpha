@@ -1,8 +1,7 @@
 # MLP (Multi-Layer Perceptron)
-model:
-  name: mlp
-  params:
-    hidden_dims: [256, 128, 64]
-    dropout: 0.3
-    batch_norm: true
-    activation: relu
+name: mlp
+params:
+  hidden_dims: [256, 128, 64]
+  dropout: 0.3
+  batch_norm: true
+  activation: relu

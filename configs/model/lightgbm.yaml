@@ -1,16 +1,15 @@
 # LightGBM
-model:
-  name: lightgbm
-  params:
-    n_estimators: 1000
-    max_depth: 8
-    learning_rate: 0.05
-    num_leaves: 63
-    subsample: 0.8
-    colsample_bytree: 0.8
-    reg_alpha: 0.1
-    reg_lambda: 1.0
-    min_child_samples: 20
-    random_state: 42
-    early_stopping_rounds: 50
-    verbose: -1
+name: lightgbm
+params:
+  n_estimators: 1000
+  max_depth: 8
+  learning_rate: 0.05
+  num_leaves: 63
+  subsample: 0.8
+  colsample_bytree: 0.8
+  reg_alpha: 0.1
+  reg_lambda: 1.0
+  min_child_samples: 20
+  random_state: 42
+  early_stopping_rounds: 50
+  verbose: -1
