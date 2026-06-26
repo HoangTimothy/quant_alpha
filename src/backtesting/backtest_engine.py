@@ -72,6 +72,7 @@ class BacktestEngine:
         -------
         dict
             Contains 'portfolio_value', 'returns', 'positions', 'stats'.
+        """
         # Unstack MultiIndex Series to DataFrame (columns=tickers, index=date)
         if isinstance(signals.index, pd.MultiIndex) and isinstance(signals, pd.Series):
             signals = signals.unstack(level=-1)
